@@ -11,6 +11,7 @@ static void togglegaps(const Arg *arg);
 
 /* Layouts */
 static void bstack(Monitor *m);
+static void gaplessgrid(Monitor *m);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
 static void deck(Monitor *m);
@@ -221,6 +222,44 @@ bstack(Monitor *m)
 		} else {
 			resize(c, sx, sy, (sw / sfacts) + ((i - m->nmaster) < srest ? 1 : 0) - (2*c->bw), sh - (2*c->bw), 0);
 			sx += WIDTH(c) + iv;
+		}
+	}
+}
+
+void
+gaplessgrid(Monitor *m)
+{
+	unsigned int n, cols, rows, cn, rn, i, cx, cy, cw, ch;
+	int oh, ov, ih, iv;
+	Client *c;
+
+	getgaps(m, &oh, &ov, &ih, &iv, &n);
+	if (n == 0)
+		return;
+
+	/* grid dimensions */
+	for (cols = 0; cols <= n/2; cols++)
+		if (cols*cols >= n)
+			break;
+	if (n == 5) /* set layout against the general calculation: not 1:2:2, but 2:3 */
+		cols = 2;
+	rows = n/cols;
+
+	/* window geometries */
+	cw = cols ? (m->ww - 2*ov - iv*(cols - 1)) / cols : m->ww - 2*ov;
+	cn = 0; /* current column number */
+	rn = 0; /* current row number */
+	for (i = 0, c = nexttiled(m->clients); c; i++, c = nexttiled(c->next)) {
+		if (i/rows + 1 > cols - n%cols)
+			rows = n/cols + 1;
+		ch = rows ? (m->wh - 2*oh - ih*(rows - 1)) / rows : m->wh - 2*oh;
+		cx = m->wx + ov + cn*(cw + iv);
+		cy = m->wy + oh + rn*(ch + ih);
+		resize(c, cx, cy, cw - 2*c->bw, ch - 2*c->bw, False);
+		rn++;
+		if (rn >= rows) {
+			rn = 0;
+			cn++;
 		}
 	}
 }
