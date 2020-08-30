@@ -8,19 +8,20 @@ static const unsigned int gappih    = 10;       /* horiz inner gap between windo
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
 static const unsigned int gappoh    = 10;       /* horiz outer gap between windows and screen edge */
 static const unsigned int gappov    = 10;       /* vert outer gap between windows and screen edge */
-static const int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */ 
+static const int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "xos4 Terminus:size=18" };
-static const char dmenufont[]       = "xos4 Terminus:size=18";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+static const char *fonts[]          = { "xos4 Terminus:style=Regular:size=16" };
+static const char dmenufont[]       = "xos4 Terminus:style=Regular:size=16";
+static char normbgcolor[]           = "#1f1f1f";
+static char normbordercolor[]       = "#303030";
+static char normfgcolor[]           = "#c0b18b";
+static char selfgcolor[]            = "#d17b49";
+static char selbordercolor[]        = "#d17b49";
+static char selbgcolor[]            = "#1f1f1f";
+static char *colors[][3] = {
+       /*               fg           bg           border   */
+       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
 /* tagging */
@@ -40,7 +41,7 @@ static const Rule rules[] = {
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
-#include "vanitygaps.c" 
+#include "vanitygaps.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
         { "[]=",	tile },			/* Default: Master on left, slaves on right */
@@ -54,9 +55,9 @@ static const Layout layouts[] = {
 
 	{ "|M|",	centeredmaster },		/* Master in middle, slaves on sides */
 	{ ">M>",	centeredfloatingmaster },	/* Same but master floats */
-        
-        { "HHH",        gaplessgrid },               
-	
+
+        { "HHH",        gaplessgrid },
+
         { "><>",	NULL },			/* no layout function means floating behavior */
 	{ NULL,		NULL },
 };
@@ -74,7 +75,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
 #include "shiftview.c"
 
@@ -110,7 +111,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period,              focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,               tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,              tagmon,         {.i = +1 } },
-	{ MODKEY,			XK_g,		        shiftview,	{ .i = -1 } },	
+	{ MODKEY,			XK_g,		        shiftview,	{ .i = -1 } },
 	{ MODKEY,			XK_semicolon,		shiftview,	{ .i =  1 } },
         { MODKEY,			XK_minus,               incrgaps,       {.i = +3 } },
 	{ MODKEY,			XK_equal,               incrgaps,       {.i = -3 } },
@@ -144,4 +145,3 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
