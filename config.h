@@ -1,5 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
+/* constants */
+#define TERMINAL "st"
+#define TERMCLASS "St"
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -14,10 +18,10 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "xos4 Terminus:style=Regular:size=16" , "siji:size=16:antialias=true:autohint=true"};
 static const char dmenufont[]       = "xos4 Terminus:style=Regular:size=16";
 static char normbgcolor[]           = "#1f1f1f";
-static char normbordercolor[]       = "#303030";
+static char normbordercolor[]       = "#1f1f1f";
 static char normfgcolor[]           = "#c0b18b";
 static char selfgcolor[]            = "#d17b49";
-static char selbordercolor[]        = "#5C5C5C";
+static char selbordercolor[]        = "#4d4d4d";
 static char selbgcolor[]            = "#1f1f1f";
 static char *colors[][3] = {
        /*               fg           bg           border   */
@@ -153,10 +157,16 @@ static Key keys[] = {
 	{ 0, XF86XK_AudioRewind,	spawn,		SHCMD("mpc seek -10") },
 	{ 0, XF86XK_AudioForward,	spawn,		SHCMD("mpc seek +10") },
 	{ 0, XF86XK_AudioMicMute,	spawn,		SHCMD("pactl set-source-mute @DEFAULT_SOURCE@ toggle") },
+	{ 0, XF86XK_AudioMedia,		spawn,		SHCMD(TERMINAL " -e ncmpcpp") },
 	{ 0, XF86XK_PowerOff,		spawn,		SHCMD("sysact") },
+	{ 0, XF86XK_Calculator,		spawn,		SHCMD(TERMINAL " -e bc -l") },
 	{ 0, XF86XK_Sleep,		spawn,		SHCMD("sudo -A zzz") },
 	{ 0, XF86XK_WWW,		spawn,		SHCMD("$BROWSER") },
+	{ 0, XF86XK_DOS,		spawn,		SHCMD(TERMINAL) },
 	{ 0, XF86XK_ScreenSaver,	spawn,		SHCMD("slock & xset dpms force off; mpc pause; pauseallmpv") },
+	{ 0, XF86XK_TaskPane,		spawn,		SHCMD(TERMINAL " -e htop") },
+	{ 0, XF86XK_Mail,		spawn,		SHCMD(TERMINAL " -e neomutt ; pkill -RTMIN+12 dwmblocks") },
+	{ 0, XF86XK_MyComputer,		spawn,		SHCMD(TERMINAL " -e ranger") },
 	/* { 0, XF86XK_Battery,		spawn,		SHCMD("") }, */
 	{ 0, XF86XK_Launch1,		spawn,		SHCMD("xset dpms force off") },
 	{ 0, XF86XK_TouchpadToggle,	spawn,		SHCMD("(synclient | grep 'TouchpadOff.*1' && synclient TouchpadOff=0) || synclient TouchpadOff=1") },
@@ -164,6 +174,13 @@ static Key keys[] = {
 	{ 0, XF86XK_TouchpadOn,		spawn,		SHCMD("synclient TouchpadOff=0") },
 	{ 0, XF86XK_MonBrightnessUp,	spawn,		SHCMD("xbacklight -inc 15") },
 	{ 0, XF86XK_MonBrightnessDown,	spawn,		SHCMD("xbacklight -dec 15") },
+
+	{ MODKEY,			XK_F2,		spawn,		SHCMD("bookmarkpick") },
+	{ MODKEY,			XK_F3,		spawn,		SHCMD("videopick") },
+	{ MODKEY,			XK_F4,		spawn,		SHCMD("video-add") },
+	{ MODKEY,			XK_F5,		spawn,		SHCMD("displayselect") },
+	{ MODKEY,			XK_F6,		spawn,		SHCMD("dmenumount") },
+	{ MODKEY,			XK_F7,		spawn,		SHCMD("dmenuumount") },
 };
 
 /* button definitions */
