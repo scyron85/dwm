@@ -1,0 +1,43 @@
+--- dwm.c	2019-02-02 18:25:28.000000000 +0530
++++ dwm.c	2021-01-10 05:23:06.472038418 +0530
+@@ -1755,6 +1807,40 @@
+ }
+ 
+ void
++sigdwmblocks(const Arg *arg)
++{
++        static int fd = -1;
++        struct flock fl;
++        union sigval sv;
++
++        if (!dwmblockssig)
++                return;
++        fl.l_type = F_WRLCK;
++        fl.l_whence = SEEK_SET;
++        fl.l_start = 0;
++        fl.l_len = 0;
++        if (fd == -1) {
++                if ((fd = open(DWMBLOCKSLOCKFILE, O_RDONLY)) == -1)
++                        return;
++                if (fcntl(fd, F_GETLK, &fl) == -1 || fl.l_type == F_UNLCK)
++                        return;
++        } else {
++                if (fcntl(fd, F_GETLK, &fl) == -1)
++                        return;
++                if (fl.l_type == F_UNLCK) {
++                        close(fd);
++                        if ((fd = open(DWMBLOCKSLOCKFILE, O_RDONLY)) == -1)
++                                return;
++                        fl.l_type = F_WRLCK;
++                        if (fcntl(fd, F_GETLK, &fl) == -1 || fl.l_type == F_UNLCK)
++                                return;
++                }
++        }
++        sv.sival_int = (dwmblockssig << 8) | arg->i;
++        sigqueue(fl.l_pid, SIGRTMIN, sv);
++}
++
++void
+ spawn(const Arg *arg)
+ {
+ 	if (arg->v == dmenucmd)
